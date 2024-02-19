@@ -1,0 +1,26 @@
+name: Publish to PyPi
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    name: Publish package
+    runs-on: ubuntu-latest
+    environment: PyPi
+    container:
+      image: python:3.8
+    steps:
+      - uses: actions/checkout@master
+      - name: Install requirements
+        run: |
+          pip install poetry --upgrade
+          poetry install --no-root
+      - name: Build sdist
+        run: poetry build
+      - name: Publish package
+        run: poetry publish
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
